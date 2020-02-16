@@ -25,17 +25,11 @@ private:
 
 public:
     DESCracker();
-
     void encrypt(aligned_vector<int> expansionBits, unsigned long long int numberkey);
-
     void setRight();
-
     void loadRight();
-
     void keyToBits(unsigned long long int number);
-
     void expansion();
-
     void permutedChoiceTwoAndKeyAddition1();
     void permutedChoiceTwoAndKeyAddition2();
     void permutedChoiceTwoAndKeyAddition3();
@@ -48,44 +42,23 @@ public:
     void permutedChoiceTwoAndKeyAddition10();
     void permutedChoiceTwoAndKeyAddition11();
     void permutedChoiceTwoAndKeyAddition12();
-
     void permutedChoiceTwoAndKeyAddition13();
-
     void permutedChoiceTwoAndKeyAddition14();
-
     void permutedChoiceTwoAndKeyAddition15();
-
     void permutedChoiceTwoAndKeyAddition16();
-
     void substitute();
-
     void permutateAndAddLeftSide();
-
-    unsigned long long int crackEncryption(string plainText, string cryptoText);
-
-    unsigned long long int crackEncryptionNotParallel(string plainText, string cryptoText);
-
-    unsigned long long int crackEncryptionFirstOneMil(string plainText, string cryptoText);
-
-    string encryptAndReturn(string plainText, unsigned long long int key);
-
-    aligned_vector<int> createFirstExpansion(string plainText);
-
-    aligned_vector<int> plainTextToPlainBits(string plainText);
-
-    aligned_vector<int> initialPermutation(aligned_vector<int> plainBits);
-
-    aligned_vector<int> setRight(aligned_vector<int> initialPermutationBits);
-
-    aligned_vector<int> expansion(aligned_vector<int> setRightBits);
-
-    aligned_vector<int> createInverseInitialAndSwapLeftRight(string cryptoText);
-
-    aligned_vector<int> swapLeftAndRight(aligned_vector<int> initialPermutationBits);
-
-    aligned_vector<int> inverseInitialPermutation(aligned_vector<int> swapLeftAndRightBits);
-
-    string cryptoBitsToHexCryptoText(aligned_vector<int> cryptoBits);
+    static unsigned long long int crackEncryption(const string& plainText, const string& cryptoText);
+    string encryptAndReturn(const string& plainText, unsigned long long int key);
+    static aligned_vector<int> createFirstExpansion(const string& plainText);
+    static aligned_vector<int> plainTextToPlainBits(const string& plainText);
+    static aligned_vector<int> initialPermutation(aligned_vector<int> plainBits);
+    static aligned_vector<int> setRight(aligned_vector<int> initialPermutationBits);
+    static aligned_vector<int> expansion(aligned_vector<int> setRightBits);
+    static aligned_vector<int> createInverseInitialAndSwapLeftRight(const string& cryptoText);
+    static aligned_vector<int> swapLeftAndRight(aligned_vector<int> initialPermutationBits);
+    static aligned_vector<int> inverseInitialPermutation(aligned_vector<int> swapLeftAndRightBits);
+    static string cryptoBitsToHexCryptoText(aligned_vector<int> cryptoBits);
 };
 
 #endif //DES_CRACKER_DESCRACKER_HPP
