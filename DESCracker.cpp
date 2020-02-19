@@ -2585,7 +2585,7 @@ unsigned long long int DESCracker::crackEncryption(const string &plainText, cons
     cout << "Limt: " << limit << endl;
     cout << "Tasksize: " << taskSize << endl;
     cout << "Iterations: " << iterations << endl;
-    cout << "Plaintext: " << plainText << " Cryptotext: " << cryptoText << endl;
+    cout << "PLAINTEXT: " << plainText << " CRYPTOTEXT: " << cryptoText << endl;
 
     unsigned long long rightKey = limit + 1;
     const aligned_vector<int> firstExpansionBits = createFirstExpansion(plainText);
@@ -2629,7 +2629,7 @@ unsigned long long int DESCracker::crackEncryption(const string &plainText, cons
             iter = iterations;
         }
     }
-    cout << "Key " << rightKey << " in " << interim << " Seconds" << endl;
+    cout << "KEY " << rightKey << " found in " << interim << " Seconds" << endl;
     return rightKey;
 }
 
