@@ -1,5 +1,5 @@
 # DES-Cracker
-# author: Henning Woydt, henningmartin.woydt@uni-jena.de
+author: Henning Woydt, henningmartin.woydt@uni-jena.de
 
 Introduction:
 This Project deals with cracking the Data Encryption Standard (DES) published in 1977. The Standard is used to encrypt data with a 64- more specifically 56-bit key and was widly used all around the world, especially in the financial market. Because of its insufficient key bit size, it was replaced with the Advanced Encryption Standard (AES) in 2002. Although DES is not in use anymore (or should not be used anymore) this project aims to crack the encryption by Brute Force. This method is very computation heavy and will therefore use the entire CPU-Power.
