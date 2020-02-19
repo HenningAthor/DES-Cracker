@@ -41,10 +41,10 @@ public:
     inline const_pointer adress(const_reference r) const { return &r; }
 
     inline pointer allocate(size_type n) {
+        /* //Windows implementation
 #ifdef _MSC_VER
         return (pointer)_aligned_malloc(n * sizeof(value_type), N);
 #else
-        //cout  << N << " "<< n* sizeof(value_type) << endl;
         void *m = _aligned_malloc(n * sizeof(value_type), N);
         if (!m) {
             puts("cannot allocate that much memory!");
@@ -52,14 +52,19 @@ public:
         }
         return (pointer) m;
 #endif
+         */
+        return (pointer)aligned_alloc(N,n*sizeof(value_type)); //Linux implementation
     }
 
     inline void deallocate(pointer p, size_type) {
+        /* //Windows implementation
 #ifdef _MSC_VER
         _aligned_free(p);
 #else
         _aligned_free(p);
 #endif
+         */
+        free (p); //Linux implementation
     }
 
     inline void construct(pointer p, const value_type &wert) {
