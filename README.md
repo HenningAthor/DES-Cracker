@@ -10,7 +10,7 @@ You can find an example of the standard right here: [http://page.math.tu-berlin.
 
 You can use the programm either to crack the encryption or to encrypt one block of data.
 
-1. Crack the encryption
+**1. Crack the encryption**
 
 To do this you need two components: the plaintext and the cryptotext, both of these must be hexadecimal Strings with a length of 16. The Programm will test every possible key from 0 to 72057594037927936 starting by 0. Once a key is found, which encrypts the plaintext to the cryptotext, the programm will stop and return the found key.
 You can start the crack by locating to the directory with the DESCracker.exe in the command line and and typing
@@ -46,7 +46,7 @@ KEY zzz found in yyy seconds
 
 indicating the right key and the time it took to find it.
 
-2. Encrypt one block of Data
+**2. Encrypt one block of Data**
 
 You need a data-block of 16 hexadecimal chars and your key to encrypt with. The Programm will then combine these both to compute the cryptotext.
 
