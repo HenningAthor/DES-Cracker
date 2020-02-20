@@ -2629,7 +2629,7 @@ unsigned long long int DESCracker::crackEncryption(const string &plainText, cons
             iter = iterations;
         }
     }
-    cout << "KEY " << rightKey << " found in " << interim << " Seconds" << endl;
+    cout << "KEY " << rightKey << " found in " << interim << " seconds" << endl;
     return rightKey;
 }
 

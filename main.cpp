@@ -72,7 +72,7 @@ int main(int argc, char** argv) {
             i++;
         }
     }
-    if(!(0 <= key && key <= 72057594037927936))
+    if(!(0 <= key && key < 72057594037927936))
     {
         cerr << "KEY is not in the valid space of 0 to 72057594037927936" << endl;
         return -1;
