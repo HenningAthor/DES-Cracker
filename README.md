@@ -18,7 +18,7 @@ You can start the crack by locating to the directory with the DESCracker.exe in 
 DES_Cracker 'PLAINTEXT' c 'CRYPTOTEXT'
 
 PLAINTEXT should contain the 16 hexadecimals plaintext and CRYPTOTEXT the 16 hexadecimals cryptotext. If these strings are not 16 chars long or contain different chars than "0 1 2 3 4 5 6 7 8 9 a b c d e f", the programm will print an error message and closes. If its correct the programm will start.
-The first thing the programm will print is:
+The programm will print:
 
 Limit: 72057594037927936  
 Tasksize: 16777216  
@@ -35,10 +35,16 @@ The statitics are printed like this:
 Abs: xxx in yyy s Rel: zzz % Est time : iii h keys/sec: jjj
 
 xxx - number of total keys tested  
-yyy - time the programm is running  
+yyy - how long the programm is computing already  
 zzz - number of keys tested in relation to how many total keys there are  
 iii - the estimated time it will take to test the remaining keys  
 jjj - how many keys the programm checks every second
+
+Once a solution is found the programm will finish the current run and then print the result like this:
+
+KEY zzz found in yyy seconds
+
+indicating the right key and the time it took to find it.
 
 2. Encrypt one block of Data
 
@@ -52,7 +58,7 @@ in the command line. PLAINTEXT must be a 16 hexadecimal string and KEY must be a
 
 xxxxxxxxxxxxxxxx to yyyyyyyyyyyyyyyy with key zzz
 
-showing the plaintext xxx which was encrypted with the key zzz to the cryptotext yyy.
+showing the plaintext xxx, which was encrypted with the key zzz, and the resulting cryptotext yyy.
 
 Project created by  
 Henning Woydt, henningmartin.woydt@uni-jena.de
