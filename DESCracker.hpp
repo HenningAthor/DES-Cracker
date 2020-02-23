@@ -55,9 +55,9 @@ public:
     static aligned_vector<int> initialPermutation(aligned_vector<int> plainBits);
     static aligned_vector<int> setRight(aligned_vector<int> initialPermutationBits);
     static aligned_vector<int> expansion(aligned_vector<int> setRightBits);
-    static aligned_vector<int> createInverseInitialAndSwapLeftRight(const string& cryptoText);
+    static aligned_vector<int> createInverseInverseInitialAndSwapLeftRight(const string& cryptoText);
     static aligned_vector<int> swapLeftAndRight(aligned_vector<int> initialPermutationBits);
-    static aligned_vector<int> inverseInitialPermutation(aligned_vector<int> swapLeftAndRightBits);
+    static aligned_vector<int> inverseInverseInitialPermutation(aligned_vector<int> swapLeftAndRightBits);
     static string cryptoBitsToHexCryptoText(aligned_vector<int> cryptoBits);
 };
 

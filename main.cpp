@@ -5,13 +5,14 @@ using namespace std;
 
 int main(int argc, char** argv) {
 
+    //check if correct amount of parameters
     if(argc != 4) {
         cout << "Please enter either" << endl;
         cout << "1. 'PLAINTEXT' c 'CRYPTOTEXT'    /Both must be a 16 hexadecimal String" << endl;
         cout << "2. 'PLAINTEXT' k 'KEY'           /PLAINTEXT must be a 16 hexadecimal String and 0 <= KEY <= 72057594037927936" << endl;
-        //cin >> *argv;
         return -1;
     }
+
     //read first parameter
     int i = 0;
     string plainText = "";
@@ -32,13 +33,14 @@ int main(int argc, char** argv) {
         return -1;
     }
 
-    bool modeEncrypt = true; //if true, starts decrypting the message. if false, encrypts the message
+    bool modeDecrypt = true; //if true, starts decrypting the message. if false, encrypts the message
     string cryptoText = "";
     unsigned long long int key = 0;
-    //Read the third parameter as a hex-string
+
+    //Read the third parameter as a hex-string, when the second parameter is 'c'
     if(argv[2][0] == 'c')
     {
-        modeEncrypt = true;
+        modeDecrypt = true;
         i = 0;
         while(argv[3][i] != '\0')
         {
@@ -57,10 +59,11 @@ int main(int argc, char** argv) {
             return -1;
         }
     }
-    //Read the third parameter as the key
+
+    //Read the third parameter as the key, when the second parameter is a 'k'
     if(argv[2][0] == 'k')
     {
-        modeEncrypt = false;
+        modeDecrypt = false;
         i = 0;
         while(argv[3][i] != '\0') {
             if (argv[3][i] >= 48 && argv[3][i] <= 57) {
@@ -72,26 +75,27 @@ int main(int argc, char** argv) {
             i++;
         }
     }
+    //check if key is in correct bounds
     if(!(0 <= key && key < 72057594037927936))
     {
         cerr << "KEY is not in the valid space of 0 to 72057594037927936" << endl;
         return -1;
     }
-    //Wrong second parameter inserted
+
+    //Wrong second parameter inserted, program will shut down
     if(argv[2][0] != 'c' && argv[2][0] != 'k')
     {
         cout << "Please enter either" << endl;
         cout << "1. 'PLAINTEXT' c 'CRYPTOTEXT'    /Both must be a 16 hexadecimal String" << endl;
         cout << "2. 'PLAINTEXT' k 'KEY'           /PLAINTEXT must be a 16 hexadecimal String and 0 <= KEY <= 72057594037927936" << endl;
-        //cin >> *argv;
         return -1;
     }
 
-    if(modeEncrypt) {
+    if(modeDecrypt) { //if mode is true, start decrypting
         cout << "Starting KEY search" << endl;
         cout << plainText << " " << cryptoText << endl;
         DESCracker::crackEncryption(plainText, cryptoText);
-    }else{
+    }else{ //else encrypt one string
         auto *cracker = new DESCracker();
         cout << "Encrypting PLAINTEXT" << endl;
         cout << plainText << " to " << cracker->encryptAndReturn(plainText, key) << " with key " << key << endl;
