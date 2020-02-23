@@ -16,16 +16,22 @@ using namespace std;
 template<class T>
 using aligned_vector = std::vector<T, aligned_allocator<T, 64>>;
 
+//Constructor to allocate a aligned_vector with 176 integer
+//176 Integer will fit perfectly in 11 cache-Lines
 DESCracker::DESCracker() {
     calc = aligned_vector<int>(176,
-                               0); // 0 - 111 bits for text, 112-113 help bits, 114-169 key bits (114 - 141 left, 142 - 169 right),170-191 Padding for cache
+                               0); // 0 - 111 bits for text, 112-113 help bits, 114-169 key bits (114 - 141 left, 142 - 169 right),170-175 Padding for cache
 }
 
-void DESCracker::encrypt(aligned_vector<int> expansionBits, const unsigned long long int numberkey) {
-    calc = move(expansionBits);
-    keyToBits(numberkey);
+//encrypts a message
+//the message will be inserted as a aligned_vector<int> containing the bits after the first expansion
+//key is a unsigned long long int between 0 and 2^56
+void DESCracker::encrypt(aligned_vector<int> expansionBits, const unsigned long long int key) {
+    calc = move(expansionBits); //initialize the calc vector with the bits
+    keyToBits(key); //convert the key to bits
 
     //Runde 1
+    //the first round is already a bit complete, so it differs a bit from the other rounds
     permutedChoiceTwoAndKeyAddition1();
     substitute();
     permutateAndAddLeftSide();
@@ -152,18 +158,21 @@ void DESCracker::encrypt(aligned_vector<int> expansionBits, const unsigned long 
     loadRight();
 }
 
+//save the right side of the bits for later
 void DESCracker::setRight() {
     for (int i = 0; i < 32; i++) {
         calc[i + 80] = calc[i + 32];
     }
 }
 
+//load the right side in the first 32 bits
 void DESCracker::loadRight() {
     for (int i = 0; i < 32; i++) {
         calc[i] = calc[i + 80];
     }
 }
 
+//converts a 56 bit key in to the bit representation and saves it in position 114-169
 void DESCracker::keyToBits(unsigned long long int number) {
     for (int i = 0; i < 56; i++) {
         calc[169 - i] = 0 != (number & 0x01);
@@ -171,6 +180,7 @@ void DESCracker::keyToBits(unsigned long long int number) {
     }
 }
 
+//the standard expansion of the DES algorithm
 void DESCracker::expansion() {
     calc[112] = calc[33];
     calc[79] = calc[32];
@@ -223,6 +233,7 @@ void DESCracker::expansion() {
     calc[34] = calc[112];
 }
 
+//bit rotation + permuted choice two + adding the key on the text bits for the first round
 void DESCracker::permutedChoiceTwoAndKeyAddition1() {
     calc[79] = (calc[79] ^ calc[146]); //47   //145+1
     calc[78] = (calc[78] ^ calc[143]); //46   //142+1
@@ -274,6 +285,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition1() {
     calc[32] = (calc[32] ^ calc[128]); //0    //127+1
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition2() {
     calc[79] = (calc[79] ^ calc[147]); //47  //146+1
     calc[78] = (calc[78] ^ calc[144]); //46  //143+1
@@ -325,6 +337,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition2() {
     calc[32] = (calc[32] ^ calc[129]); //0   //128+1
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition3() {
     calc[79] = (calc[79] ^ calc[149]); //47 //147+2
     calc[78] = (calc[78] ^ calc[146]); //46 //144+2
@@ -376,6 +389,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition3() {
     calc[32] = (calc[32] ^ calc[131]); //0  //129+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition4() {
     calc[79] = (calc[79] ^ calc[151]); //47 //149+2
     calc[78] = (calc[78] ^ calc[148]); //46 //146+2
@@ -427,6 +441,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition4() {
     calc[32] = (calc[32] ^ calc[133]); //0  //131+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition5() {
     calc[79] = (calc[79] ^ calc[153]); //47 //151+2
     calc[78] = (calc[78] ^ calc[150]); //46 //148+2
@@ -478,6 +493,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition5() {
     calc[32] = (calc[32] ^ calc[135]); //0  //133+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition6() {
     calc[79] = (calc[79] ^ calc[155]); //47 //153+2
     calc[78] = (calc[78] ^ calc[152]); //46 //150+2
@@ -529,6 +545,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition6() {
     calc[32] = (calc[32] ^ calc[137]); //0  //135+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition7() {
     calc[79] = (calc[79] ^ calc[157]); //47 //155+2
     calc[78] = (calc[78] ^ calc[154]); //46 //152+2
@@ -580,6 +597,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition7() {
     calc[32] = (calc[32] ^ calc[139]); //0  //137+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition8() {
     calc[79] = (calc[79] ^ calc[159]); //47 //157+2
     calc[78] = (calc[78] ^ calc[156]); //46 //154+2
@@ -631,6 +649,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition8() {
     calc[32] = (calc[32] ^ calc[141]); //0  //139+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition9() {
     calc[79] = (calc[79] ^ calc[160]); //47 //159+1
     calc[78] = (calc[78] ^ calc[157]); //46 //156+1
@@ -682,6 +701,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition9() {
     calc[32] = (calc[32] ^ calc[114]); //0  //141+1
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition10() {
     calc[79] = (calc[79] ^ calc[162]); //47 //160+2
     calc[78] = (calc[78] ^ calc[159]); //46 //157+2
@@ -733,6 +753,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition10() {
     calc[32] = (calc[32] ^ calc[116]); //0  //114+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition11() {
     calc[79] = (calc[79] ^ calc[164]); //47 //162+2
     calc[78] = (calc[78] ^ calc[161]); //46 //159+2
@@ -784,6 +805,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition11() {
     calc[32] = (calc[32] ^ calc[118]); //0  //116+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition12() {
     calc[79] = (calc[79] ^ calc[166]); //47 //164+2
     calc[78] = (calc[78] ^ calc[163]); //46 //161+2
@@ -835,6 +857,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition12() {
     calc[32] = (calc[32] ^ calc[120]); //0  //118+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition13() {
     calc[79] = (calc[79] ^ calc[168]); //47 //166+2
     calc[78] = (calc[78] ^ calc[165]); //46 //163+2
@@ -886,6 +909,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition13() {
     calc[32] = (calc[32] ^ calc[122]); //0  //120+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition14() {
     calc[79] = (calc[79] ^ calc[114]); //47 //168+2
     calc[78] = (calc[78] ^ calc[167]); //46 //165+2
@@ -937,6 +961,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition14() {
     calc[32] = (calc[32] ^ calc[124]); //0  //122+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition15() {
     calc[79] = (calc[79] ^ calc[116]); //47 //114+2
     calc[78] = (calc[78] ^ calc[169]); //46 //167+2
@@ -988,6 +1013,7 @@ void DESCracker::permutedChoiceTwoAndKeyAddition15() {
     calc[32] = (calc[32] ^ calc[126]); //0  //124+2
 }
 
+//analog to permutedChoiceTwoAndKeyAddition1
 void DESCracker::permutedChoiceTwoAndKeyAddition16() {
     calc[79] = (calc[79] ^ calc[117]); //47 //116+1
     calc[78] = (calc[78] ^ calc[142]); //46 //169+1
@@ -1039,8 +1065,14 @@ void DESCracker::permutedChoiceTwoAndKeyAddition16() {
     calc[32] = (calc[32] ^ calc[127]); //0  //126+1
 }
 
+//performs the standard substitution of the DES algorithm
 void DESCracker::substitute() {
     int number = 0;
+
+    //each position in the substitution box gets a unique number calculated from the 6 bits
+    //4 numbers encode the same substitution so they all have the same result
+    //Do this for every substitution box
+
     //Box Nr 0
     number += calc[32] * 32 + calc[33] * 16 + calc[34] * 8 + calc[35] * 4 + calc[36] * 2 + calc[37];
     switch (number) {
@@ -2528,6 +2560,7 @@ void DESCracker::substitute() {
     }
 }
 
+//permutates and adds the left side on the right side of bits
 void DESCracker::permutateAndAddLeftSide() {
     calc[112] = calc[48];
     calc[48] = calc[33] ^ calc[16];
@@ -2566,7 +2599,9 @@ void DESCracker::permutateAndAddLeftSide() {
     calc[46] = calc[112] ^ calc[14];
 }
 
+//the methode to decrypt a plaintext with the cryptotext to get the key
 unsigned long long int DESCracker::crackEncryption(const string &plainText, const string &cryptoText) {
+    //statistics
     unsigned long long int completed = 0;
     double overallPercent = 0;
     double estTime = 0;
@@ -2575,50 +2610,52 @@ unsigned long long int DESCracker::crackEncryption(const string &plainText, cons
     double time = omp_get_wtime();
     double interim = 0;
 
-    const unsigned long long int limit = 72057594037927936;
+    const unsigned long long int limit = 72057594037927936; //how many keys have to be tested
     auto limitDouble = static_cast<double>(limit);
 
-    const int taskSize = 1 << 24;
+    const int taskSize = 1 << 24; //the size of one "run"
 
-    const unsigned long long int iterations = limit / taskSize;
+    const unsigned long long int iterations = limit / taskSize; //the number of runs
 
+    //prints some statistics
     cout << "Limt: " << limit << endl;
     cout << "Tasksize: " << taskSize << endl;
     cout << "Iterations: " << iterations << endl;
     cout << "PLAINTEXT: " << plainText << " CRYPTOTEXT: " << cryptoText << endl;
 
-    unsigned long long rightKey = limit + 1;
-    const aligned_vector<int> firstExpansionBits = createFirstExpansion(plainText);
-    const aligned_vector<int> rightResult = createInverseInitialAndSwapLeftRight(cryptoText);
-    bool answerFound = false;
-    for (unsigned long long int iter = 0; iter < iterations; iter++) {
+    unsigned long long rightKey = limit + 1; //rightKey is the solution, initialized with a value which can not occur
+    const aligned_vector<int> firstExpansionBits = createFirstExpansion(plainText); //the start bits
+    const aligned_vector<int> rightResult = createInverseInverseInitialAndSwapLeftRight(cryptoText); //the bits we expect
+    bool answerFound = false; //saves that a answer has been found
+    for (unsigned long long int iter = 0; iter < iterations; iter++) { // big loop to run over all iterations
         if (!answerFound) {
-#pragma omp parallel shared(iter, answerFound) reduction(min:rightKey)
+#pragma omp parallel shared(iter, answerFound) reduction(min:rightKey) //open a parallel region and reduce all answers to rightKey
             {
-                DESCracker *des = new DESCracker();
-#pragma omp for
-                for (int size = 0; size < taskSize; size++) {
-                    const unsigned long long key = iter * taskSize + size;
-                    des->encrypt(firstExpansionBits, key);
-                    bool error = false;
-                    for (int i = 0; i < 64; i++) {
+                DESCracker *des = new DESCracker(); //create a Des Object for every thread
+#pragma omp for //split the for loop on the threads
+                for (int size = 0; size < taskSize; size++) { //small loop for one "run"
+                    const unsigned long long key = iter * taskSize + size; //calculate the unique key
+                    des->encrypt(firstExpansionBits, key); //encrypt the message
+                    bool error = false; //variable to save if there is an error when comparing the result and the expected result
+                    for (int i = 0; i < 64; i++) { //loop to compare result and the expected result
                         if (rightResult[i] != des->calc[i]) {
-                            i = 65;
+                            i = 65; //there is a error
                             error = true;
                         }
                     }
-                    if (!error) {
-                        rightKey = key;
-                        answerFound = true;
+                    if (!error) { //if no error occured
+                        rightKey = key; //set the right key
+                        answerFound = true; //save that an answer has been found
                     }
                 }
-                delete (des);
+                delete (des); //delete the object to not trash memory
             }
-            completed += taskSize;
-            interim = omp_get_wtime() - time;
-            overallPercent = (completed / limitDouble) * 100;
-            estTime = (((interim / completed) * (limit - completed)) / 3600);
-            keysPerSec = completed / interim;
+            completed += taskSize; //add the completed number of keys
+            interim = omp_get_wtime() - time; //save the time
+            overallPercent = (completed / limitDouble) * 100; //percentage of checked keys
+            estTime = (((interim / completed) * (limit - completed)) / 3600); //calculate the estimated time
+            keysPerSec = completed / interim; //calculate the keys per second
+            //print the statistics
             cout << fixed << "Abs: " << completed << " in " << setprecision(5) << interim
                  << setprecision(16)
                  << " s Rel: "
@@ -2626,26 +2663,30 @@ unsigned long long int DESCracker::crackEncryption(const string &plainText, cons
                  << estTime << " h "
                  << "keys/sec: " << keysPerSec << endl;
         } else {
-            iter = iterations;
+            iter = iterations; //set the big loop to end
         }
     }
+    //print the found key
     cout << "KEY " << rightKey << " found in " << interim << " seconds" << endl;
     return rightKey;
 }
 
+//encrypt a string and returns the cryptotext
 string DESCracker::encryptAndReturn(const string &plainText, const unsigned long long int key) {
     aligned_vector<int> firstExpansionBits = createFirstExpansion(plainText);
     encrypt(firstExpansionBits, key);
     aligned_vector<int> cryptoBits = calc;
     cryptoBits.resize(64);
-    return cryptoBitsToHexCryptoText(inverseInitialPermutation(swapLeftAndRight(cryptoBits)));
+    return cryptoBitsToHexCryptoText(inverseInverseInitialPermutation(swapLeftAndRight(cryptoBits)));
 }
 
+//create the bits after the first expansion
 aligned_vector<int> DESCracker::createFirstExpansion(const string &plainText) {
     aligned_vector<int> bits = expansion(setRight(initialPermutation(plainTextToPlainBits(plainText))));
     return bits;
 }
 
+//converts the hex string to a bit representation
 aligned_vector<int> DESCracker::plainTextToPlainBits(const string &plainText) {
     //Example: 1234567890abcdef converts to 0001 0010 00011 ... 1111
     aligned_vector<int> plainBits(176, 0);
@@ -2769,6 +2810,7 @@ aligned_vector<int> DESCracker::plainTextToPlainBits(const string &plainText) {
     return plainBits;
 }
 
+//calculates the initial permutation
 aligned_vector<int> DESCracker::initialPermutation(aligned_vector<int> plainBits) {
     plainBits[112] = plainBits[6];
     plainBits[6] = plainBits[9];
@@ -2862,6 +2904,7 @@ aligned_vector<int> DESCracker::initialPermutation(aligned_vector<int> plainBits
     return plainBits;
 }
 
+//set the right side to 32-63
 aligned_vector<int> DESCracker::setRight(aligned_vector<int> initialPermutationBits) {
     for (int i = 0; i < 32; i++) {
         initialPermutationBits[i + 80] = initialPermutationBits[i + 32];
@@ -2869,6 +2912,7 @@ aligned_vector<int> DESCracker::setRight(aligned_vector<int> initialPermutationB
     return initialPermutationBits;
 }
 
+//calculates the expansion
 aligned_vector<int> DESCracker::expansion(aligned_vector<int> setRightBits) {
     setRightBits[112] = setRightBits[33];
     setRightBits[79] = setRightBits[32];
@@ -2922,11 +2966,13 @@ aligned_vector<int> DESCracker::expansion(aligned_vector<int> setRightBits) {
     return setRightBits;
 }
 
-aligned_vector<int> DESCracker::createInverseInitialAndSwapLeftRight(const string &cryptoText) {
+//uses the inverse invers initial = initial permutation and swaps left and right side
+aligned_vector<int> DESCracker::createInverseInverseInitialAndSwapLeftRight(const string &cryptoText) {
     aligned_vector<int> bits = swapLeftAndRight(initialPermutation(plainTextToPlainBits(cryptoText)));
     return bits;
 }
 
+//swaps left and right side
 aligned_vector<int> DESCracker::swapLeftAndRight(aligned_vector<int> initialPermutationBits) {
     int help;
     for (int i = 0; i < 32; i++) {
@@ -2937,7 +2983,8 @@ aligned_vector<int> DESCracker::swapLeftAndRight(aligned_vector<int> initialPerm
     return initialPermutationBits;
 }
 
-aligned_vector<int> DESCracker::inverseInitialPermutation(aligned_vector<int> swapLeftAndRightBits) {
+//calculate initial permutation
+aligned_vector<int> DESCracker::inverseInverseInitialPermutation(aligned_vector<int> swapLeftAndRightBits) {
     aligned_vector<int> inverseInitialPermutationBits(176, 0);
 
     inverseInitialPermutationBits[63 - 57] = swapLeftAndRightBits[63];
@@ -3015,6 +3062,7 @@ aligned_vector<int> DESCracker::inverseInitialPermutation(aligned_vector<int> sw
     return inverseInitialPermutationBits;
 }
 
+//transform the cryptoBits to the cryptoText
 string DESCracker::cryptoBitsToHexCryptoText(aligned_vector<int> cryptoBits) {
     stringstream stream;
     for (int i = 0; i < 64; i += 4) {
